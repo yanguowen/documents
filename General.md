@@ -87,3 +87,24 @@ Currying 克利化，是把接受多个参数的函数变换成接受一个单�
 
 跳表：有几层，每层都是链表，上层相当于索引
 
+### 大数据
+Hadoop:
+  namenode是HDFS的元数据信息，都存在内存里，一个文件大概要150个字节，所以过多的小文件不适合在HDFS里  
+  datanode为工作节点，类似于nameserver和indexserver  
+  HDFS里只有一个writer，不支持多个同时写入，写总是append到文件末尾，原则是一次写入，多次读取分析。  
+  HDFS中块的大小为64M, 所以比较适合大文件,Hadoop的map主要是以块为处理对象，而不是文件。  
+  Combine函数式用来合并本地数据的，一个map处理完了以后可以用combine函数在本地合并，比如将很多the, 1合并为the, 999然后传递给reduce  
+
+Pig:  
+  Pig是基于Hadoop上的一个高层应用，有自己的语法，可以写出脚本的语句来解决问题，主要就是不需要复杂的Hadoop编程, 不同于SQL, Pig是基于数据流的,主要的操作是变形，但是SQL是描述型的
+Hive:  
+  是基于Hadoop上的数据仓库框架，用类似SQL语句而不是Java语言来组织,Hive吧SQL查询转换为一系列集群上运行的MapReduce作业,Hive适合离线操作  
+  Hive把数据组织委表，所以需要create table,有些语句可以直接把数据从文件读到表里  
+  Hive是读时模式(Schema on read),一般数据库是写时模式(Schema on write)，意思是一般的数据库是在写入的时候检查schema表，约束等，但Hive是在读时候，所以写入速度很快，基本就是copy文件
+  之所以会有这个需求是因为很多数据时固定的，但是查询时未知的，所以没办法在建表的时候知道该建立是么索引  
+HBase:  
+  在HDFS上面向列的分布式数据库,支持实时随机读取。  
+ZooKeeper是Hadoop的分布式协调服务  
+Sqoop是一个工具，可以把数据源从RDBMS中抽取到Hadoop中，类似于SLT/DS的东东  
+
+
