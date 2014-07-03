@@ -10,7 +10,12 @@
 ``` 
 ### 引用类型
 包含三种，slice, map和channel
-new用来分配值类型数据，不初始化，只分配内存，make用来创建三种引用类型，返回实例  
+new用来分配值类型数据，初始化为零值，分配内存并返回指针，make用来创建三种引用类型，返回实例  
+new和make都是函数而不是操作符
+
+### 类型检查
+p.(type) 返回p的真正类型，只能在switch里面调用  
+也可以用something.(I)来测试something是不是实现了I接口
 
 ### 指针
 返回局部变量指针是安全的，程序会将其分配在GCHeap上，如下:
@@ -34,7 +39,7 @@ func main() {
 }
 ```
 ### 错误处理
-panic（）抛出错误，recover（）捕获错误
+panic（）抛出错误，recover（）捕获错误, panic会一直持续向上，知道recover,recover只能在defer函数中调用, recover在正常的情况下会没有作用，返回nil
 
 ### Array
 Array是值类型，传递参数和赋值会复制整个数组，而不是指针
