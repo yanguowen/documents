@@ -6,6 +6,9 @@ JSONP:把JSON数据包在一个javascript方法里,可以跨源调用,因为浏�
 Cookie不可跨域名,即google只能访问google的cookie,不能访问baidu的cookie
 同一个域下2个二级域名共享Cookie。可以设置domain
 
+Session也是使用cookie来保持数据,存储了JSESSIONID
+如果浏览器不支持cookie, 则可以使用url重写,把session的id添加在url后面用作验证, encodeURL会自动判断是不是支持cookie, 不支持则重写url
+
 Session劫持：取得客户端的cookie里面的sessionId, 然后在别的机器上发起会话，劫持到别人的session
 防范1：设置cookie为httponly, 那么客户端脚本不能访问此cookie
 防范2：每个请求带一个动态token, 每次验证token.
@@ -88,7 +91,7 @@ Currying 克利化，是把接受多个参数的函数变换成接受一个单�
 跳表：有几层，每层都是链表，上层相当于索引
 
 ### 大数据
-Hadoop:
+Hadoop:  
   namenode是HDFS的元数据信息，都存在内存里，一个文件大概要150个字节，所以过多的小文件不适合在HDFS里  
   datanode为工作节点，类似于nameserver和indexserver  
   HDFS里只有一个writer，不支持多个同时写入，写总是append到文件末尾，原则是一次写入，多次读取分析。  
@@ -97,14 +100,18 @@ Hadoop:
 
 Pig:  
   Pig是基于Hadoop上的一个高层应用，有自己的语法，可以写出脚本的语句来解决问题，主要就是不需要复杂的Hadoop编程, 不同于SQL, Pig是基于数据流的,主要的操作是变形，但是SQL是描述型的
+  
 Hive:  
   是基于Hadoop上的数据仓库框架，用类似SQL语句而不是Java语言来组织,Hive吧SQL查询转换为一系列集群上运行的MapReduce作业,Hive适合离线操作  
   Hive把数据组织委表，所以需要create table,有些语句可以直接把数据从文件读到表里  
   Hive是读时模式(Schema on read),一般数据库是写时模式(Schema on write)，意思是一般的数据库是在写入的时候检查schema表，约束等，但Hive是在读时候，所以写入速度很快，基本就是copy文件
   之所以会有这个需求是因为很多数据时固定的，但是查询时未知的，所以没办法在建表的时候知道该建立是么索引  
+  
 HBase:  
   在HDFS上面向列的分布式数据库,支持实时随机读取。  
+  
 ZooKeeper是Hadoop的分布式协调服务  
+
 Sqoop是一个工具，可以把数据源从RDBMS中抽取到Hadoop中，类似于SLT/DS的东东  
 
 
