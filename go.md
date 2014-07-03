@@ -58,19 +58,20 @@ var u1 struct {
 }
 ```
 ### 接口
+空接口相当于一般语言的Object或者是void*
 给接口赋值会导致拷贝临时变量保存在接口里，只能读不能修改。如下:  
 ```
 type User struct {
-id int
-name string
+    id int
+    name string
 }
 func main() {
-u := User{1, "Tom"}
-var vi, pi interface{} = u, &u
-// vi.(User).name = "Jack" // Error: cannot assign to vi.(User).name
-pi.(*User).name = "Jack"
-fmt.Printf("%v\n", vi.(User))
-fmt.Printf("%v\n", pi.(*User))
+    u := User{1, "Tom"}
+    var vi, pi interface{} = u, &u
+    // vi.(User).name = "Jack" // Error: cannot assign to vi.(User).name
+    pi.(*User).name = "Jack"
+    fmt.Printf("%v\n", vi.(User))
+    fmt.Printf("%v\n", pi.(*User))
 }
 ```
 输出：
@@ -78,6 +79,40 @@ fmt.Printf("%v\n", pi.(*User))
 {1 Tom}
 &{1 Jack}
 ```
+让编译器检查，以确保某个类型实现接口。  
+`var _ fmt.Stringer = (*Data)(nil)`
 
+### 并行
+调度器不能保证多个 goroutine 执行次序，且进程退出时不会等待它们结束。  
+默认系统只用一个thread来跑所有的goroutine, 可以设置runtime.GOMAXPROCS来实现真正的并行
+goroute默认会一直占用CPU知道结束，所有需要调用Gosched来让出CPU给别的Goroutine
 
+Channel为并发安全的，默认为同步模式，会阻塞，异步方式通过判断缓冲区是否满或者空来阻塞
 
+强制转换为单向Channel，但是单向不能转为双向
+```
+c := make(chan int, 3)
+var send chan<- int = c // send-only
+var recv <-chan int = c // receive-only
+```
+Select随机选择包含的channel或default, 如果没有则阻塞
+`select {}`
+会阻塞goroutine
+
+可以利用自己读写chan来实现代码段的lock，如下:  
+```
+sem <- 1
+for x := 0; x < 3; x++ {
+    fmt.Println(id, x)
+}
+<-sem
+```
+利用select实现超时处理   
+```
+select {
+	case v := <-c: 
+		fmt.Println(v)
+	case <-time.After(time.Second * 3): 
+		fmt.Println("timeout.")
+}
+```
