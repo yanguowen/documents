@@ -2,6 +2,7 @@
 
 ### 语法
 在for循环中，因为go不支持逗号运算符，所以不能类似c语言的`i=i+1,j++`这样的,必须使用平行赋值，如`i,j=i+1,j+1`
+obj.(Type) 或者 obj.(interface)可以实现接口或者类型查询,返回接口或者类型名
 
 ### 定义域赋值
 := 在同一层代码中可以被重复赋值，而不会定义出来。在不同代码层中会定义新的变了，如:
@@ -70,7 +71,14 @@ var u1 struct {
 }
 ```
 ### 接口
-空接口相当于一般语言的Object或者是void*
+空接口相当于一般语言的Object或者是void*  
+```
+var v1 interface{} = 1 // 将int类型赋值给interface{}
+var v2 interface{} = "abc" // 将string类型赋值给interface{}
+var v3 interface{} = &v2 // 将*interface{}类型赋值给interface{}
+var v4 interface{} = struct{ X int }{1}
+var v5 interface{} = &struct{ X int }{1}
+```
 给接口赋值会导致拷贝临时变量保存在接口里，只能读不能修改。如下:  
 ```
 type User struct {
@@ -101,13 +109,13 @@ goroute默认会一直占用CPU知道结束，所有需要调用Gosched来让出
 
 Channel为并发安全的，默认为同步模式，会阻塞，异步方式通过判断缓冲区是否满或者空来阻塞
 
-强制转换为单向Channel，但是单向不能转为双向
+强制转换为单向Channel，但是单向不能转为双向，单向chan只是在传递给函数时候使用，防止错处，在调用出还是双向的
 ```
 c := make(chan int, 3)
 var send chan<- int = c // send-only
 var recv <-chan int = c // receive-only
 ```
-Select随机选择包含的channel或default, 如果没有则阻塞
+Select随机选择包含的channel或default, 如果没有则阻塞,select里面的case必须是IO操作
 `select {}`
 会阻塞goroutine
 
@@ -128,3 +136,6 @@ select {
 		fmt.Println("timeout.")
 }
 ```
+### 锁
+sync.Mutex和sync.RWMutex,前一个是一般锁，后一个是单写多读锁，用Lock为写Lock, RLock为读lock
+sync.Once有一个once.Do(func)的分发，可以保证在运行期只调用一次的作用
