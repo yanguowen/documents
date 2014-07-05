@@ -139,3 +139,9 @@ select {
 ### 锁
 sync.Mutex和sync.RWMutex,前一个是一般锁，后一个是单写多读锁，用Lock为写Lock, RLock为读lock
 sync.Once有一个once.Do(func)的分发，可以保证在运行期只调用一次的作用
+
+### 网络
+go支持rpc调用，服务器端注册rpc.Register, 客户端既调用,网络传递数据用Gob格式，为而二进制流，所以不能跨语言使用  
+json.Marshal(obj) 可以序列化一个对象为json格式，byte数组。
+
+
