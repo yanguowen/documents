@@ -109,9 +109,12 @@ func main() {
 默认系统只用一个thread来跑所有的goroutine, 可以设置runtime.GOMAXPROCS来实现真正的并行
 goroute默认会一直占用CPU知道结束，所有需要调用Gosched来让出CPU给别的Goroutine
 
-Channel为并发安全的，默认为同步模式，会阻塞，异步方式通过判断缓冲区是否满或者空来阻塞
+Channel为并发安全的，默认为同步模式，会阻塞，异步方式通过判断缓冲区是否满或者空来阻塞  
+chan发送方也会阻塞，在没有读取的时候会一直阻塞
+由于在Go中，数据同步发生在从channel接收数据阶段  
+强制转换为单向Channel，但是单向不能转为双向，单向chan只是在传递给函数时候使用，防止错处，在调用出还是双向的  
 
-强制转换为单向Channel，但是单向不能转为双向，单向chan只是在传递给函数时候使用，防止错处，在调用出还是双向的
+
 ```
 c := make(chan int, 3)
 var send chan<- int = c // send-only
